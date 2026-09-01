@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "falcon-mcp": {
+      "command": "uvx",
+      "args": ["--env-file", ".env", "falcon-mcp==0.17.0"]
+    }
+  }
+}

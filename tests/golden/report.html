@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'">
+<meta name="referrer" content="no-referrer">
+<title>Parity fixture &lt;script&gt;alert(1)&lt;/script&gt; &amp; &quot;quotes&quot; &amp; &#x27;apostrophes&#x27;</title>
+<style>
+:root {
+  --ink: #f3f5f8; --body: #d4d9e1; --muted: #9aa2b1; --faint: #6b7284;
+  --line: #2c3038; --rule: #3a3f49; --bg: #14161a; --card: #1f2229;
+  --brand: #e0091a;
+  --crit: #ff5468; --crit-bg: #3a1620; --high: #ff9d42; --high-bg: #3a2810;
+  --med: #f0c93b; --med-bg: #382f0e; --low: #8fa8d6; --low-bg: #1c2636;
+  --ok: #4ade80; --ok-bg: #113322; --info: #6fb0ff; --info-bg: #142a42;
+  --surface: #262a33; --stripe: #242830; --hover: #2a2f3a;
+  --neutral-bg: #2a2e38; --neutral-ink: #aab0bd;
+  --handle-bg: #332b0f; --handle-border: #6b551c; --handle-accent: #bf9518;
+  --handle-ink: #e3cf8f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 1.75rem 1.5rem 4rem; background: var(--bg); color: var(--body);
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+main { max-width: 1180px; margin: 0 auto; }
+
+/* -- header ------------------------------------------------------------- */
+header { border-bottom: 3px solid var(--brand); padding-bottom: .85rem; margin-bottom: 1.1rem; }
+h1 { font-size: 1.75rem; line-height: 1.15; margin: 0 0 .35rem; color: var(--ink);
+  letter-spacing: -.015em; font-weight: 650; }
+h2 { font-size: 1.02rem; margin: 2.1rem 0 .5rem; color: var(--ink); font-weight: 650;
+  letter-spacing: -.005em; }
+.sub { color: var(--muted); font-size: .88rem; margin: .15rem 0 0; }
+.sub b { color: var(--body); font-weight: 600; }
+.meta { display: flex; flex-wrap: wrap; gap: .3rem .9rem; margin: .5rem 0 0;
+  font-size: .82rem; color: var(--muted); }
+.meta span { white-space: nowrap; }
+
+/* -- verdict: the answer, before the justification ---------------------- */
+.verdict {
+  background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--rule);
+  border-radius: 5px; padding: .85rem 1.1rem; margin: 0 0 1.15rem;
+}
+.verdict .vk { font-size: .7rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--muted); margin-bottom: .2rem; }
+.verdict p { margin: 0; font-size: 1.12rem; line-height: 1.4; color: var(--ink);
+  font-weight: 550; }
+.verdict.t-critical { border-left-color: var(--crit); background: var(--crit-bg); }
+.verdict.t-critical .vk { color: var(--crit); }
+.verdict.t-high { border-left-color: var(--high); background: var(--high-bg); }
+.verdict.t-high .vk { color: var(--high); }
+.verdict.t-medium { border-left-color: var(--med); background: var(--med-bg); }
+.verdict.t-medium .vk { color: var(--med); }
+.verdict.t-ok { border-left-color: var(--ok); background: var(--ok-bg); }
+.verdict.t-ok .vk { color: var(--ok); }
+.verdict.t-info { border-left-color: var(--info); background: var(--info-bg); }
+.verdict.t-info .vk { color: var(--info); }
+
+/* -- gaps: what this run did not establish ------------------------------ */
+.gaps { background: var(--card); border: 1px solid var(--line);
+  border-left: 6px solid var(--med); border-radius: 5px;
+  padding: .8rem 1.1rem; margin-bottom: 1.15rem; }
+.gaps h2 { margin: 0; font-size: .78rem; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--med); font-weight: 700; }
+.gaps ul { margin: .45rem 0 0; padding-left: 1.15rem; }
+.gaps li { margin: .3rem 0; font-size: .9rem; }
+
+/* -- metrics ------------------------------------------------------------ */
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: .7rem; margin: 1.15rem 0 0; }
+.metric { background: var(--card); border: 1px solid var(--line);
+  border-top: 3px solid var(--rule); border-radius: 5px; padding: .75rem .9rem; }
+.metric .l { font-size: .72rem; color: var(--muted); text-transform: uppercase;
+  letter-spacing: .07em; font-weight: 650; }
+.metric .v { font-size: 2.05rem; font-weight: 660; line-height: 1.05;
+  letter-spacing: -.03em; color: var(--ink); font-variant-numeric: tabular-nums;
+  margin-top: .15rem; }
+.metric .n { font-size: .78rem; color: var(--muted); margin-top: .3rem; line-height: 1.35; }
+.metric .unavailable { font-size: 1.05rem; font-weight: 600; font-style: italic;
+  color: var(--muted); letter-spacing: 0; padding: .45rem 0 .35rem; }
+.metric.t-critical { border-top-color: var(--crit); }
+.metric.t-critical .v { color: var(--crit); }
+.metric.t-high { border-top-color: var(--high); }
+.metric.t-high .v { color: var(--high); }
+.metric.t-medium { border-top-color: var(--med); }
+.metric.t-medium .v { color: var(--med); }
+.metric.t-ok { border-top-color: var(--ok); }
+.metric.t-ok .v { color: var(--ok); }
+.metric.t-info { border-top-color: var(--info); }
+.metric.t-info .v { color: var(--info); }
+
+/* -- tables: built to be triaged top-down ------------------------------- */
+.tbl { background: var(--card); border: 1px solid var(--line); border-radius: 5px;
+  margin: .55rem 0 0; overflow: auto; max-height: 78vh; }
+table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: .92rem; }
+th, td { text-align: left; padding: .52rem .7rem; vertical-align: top;
+  border-bottom: 1px solid var(--line); }
+thead th { position: sticky; top: 0; z-index: 1; background: var(--surface);
+  font-weight: 700; font-size: .715rem; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--muted); border-bottom: 2px solid var(--rule);
+  white-space: nowrap; }
+tbody tr:last-child td { border-bottom: 0; }
+tbody tr:nth-child(even) { background: var(--stripe); }
+tbody tr:hover { background: var(--hover); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Rank gutter, and a left accent that carries severity without a column. */
+td.rank, th.rank { width: 2.6rem; text-align: right; padding-right: .55rem;
+  color: var(--faint); font-variant-numeric: tabular-nums; font-weight: 650;
+  font-size: .82rem; }
+tbody tr.top td.rank { color: var(--ink); }
+tbody tr.top td { font-weight: 550; }
+td:first-child { border-left: 4px solid transparent; }
+tr.a-critical td:first-child { border-left-color: var(--crit); }
+tr.a-high td:first-child { border-left-color: var(--high); }
+tr.a-medium td:first-child { border-left-color: var(--med); }
+tr.a-low td:first-child { border-left-color: var(--low); }
+tr.a-ok td:first-child { border-left-color: var(--ok); }
+
+/* Proportion bar: the number stays authoritative, the bar is the glance. */
+td.bar { position: relative; text-align: right; font-variant-numeric: tabular-nums;
+  min-width: 6.5rem; }
+td.bar .track { display: block; height: .34rem; margin-top: .28rem;
+  background: var(--line); border-radius: 2px; overflow: hidden; }
+td.bar .fill { display: block; height: 100%; background: var(--low); border-radius: 2px; }
+tr.a-critical td.bar .fill { background: var(--crit); }
+tr.a-high td.bar .fill { background: var(--high); }
+tr.a-medium td.bar .fill { background: var(--med); }
+
+/* Badges: exploit status and KEV read as flags, not as prose. */
+.badge { display: inline-block; padding: .1rem .38rem; margin: 0 .2rem .18rem 0;
+  border-radius: 3px; font-size: .68rem; font-weight: 750; letter-spacing: .05em;
+  text-transform: uppercase; white-space: nowrap; border: 1px solid transparent; }
+.b-critical { background: var(--crit-bg); color: var(--crit); border-color: transparent; }
+.b-high { background: var(--high-bg); color: var(--high); border-color: transparent; }
+.b-medium { background: var(--med-bg); color: var(--med); border-color: transparent; }
+.b-low { background: var(--low-bg); color: var(--low); border-color: transparent; }
+.b-ok { background: var(--ok-bg); color: var(--ok); border-color: transparent; }
+.b-neutral { background: var(--neutral-bg); color: var(--neutral-ink); border-color: var(--line); }
+.bnone { color: var(--faint); }
+
+/* -- text, code, notes -------------------------------------------------- */
+.lede { background: var(--card); border: 1px solid var(--line); border-radius: 5px;
+  padding: .8rem 1.05rem; margin: .55rem 0 0; font-size: 1rem; line-height: 1.5; }
+code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .85em; }
+pre {
+  background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--rule);
+  border-radius: 4px; padding: .75rem .9rem; margin: .55rem 0 0; overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .82rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+  color: var(--body);
+}
+td.mono, td.fql { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .805rem; word-break: break-word; line-height: 1.45; }
+td.fql { max-width: 34rem; color: var(--body); }
+td.id { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .805rem; color: var(--body); word-break: break-all; }
+.note { color: var(--muted); font-size: .84rem; margin: .4rem 0 0; line-height: 1.45; }
+.sev-critical { color: var(--crit); font-weight: 700; }
+.sev-high { color: var(--high); font-weight: 700; }
+.sev-medium { color: var(--med); font-weight: 600; }
+.sev-low { color: var(--low); }
+.sev-none, .sev-informational { color: var(--faint); }
+.empty { color: var(--muted); font-style: italic; padding: .85rem .7rem; }
+
+/* -- evidence: foldable for a demo, never absent ------------------------ */
+.evidence { margin-top: 2.4rem; border-top: 3px solid var(--ink); padding-top: .1rem; }
+.evidence summary { cursor: pointer; list-style: none; padding: .75rem 0 .1rem;
+  font-size: 1.02rem; font-weight: 650; color: var(--ink); }
+.evidence summary::-webkit-details-marker { display: none; }
+.evidence summary::before { content: "\25bc  "; font-size: .7em; color: var(--muted); }
+.evidence:not([open]) summary::before { content: "\25b6  "; }
+.evidence summary .count { font-weight: 600; color: var(--muted); font-size: .84rem;
+  letter-spacing: .02em; }
+.evidence .tbl { max-height: none; }
+.evidence tr.note-row td.note { padding: .1rem 1rem .6rem; color: var(--muted);
+  font-size: .84rem; font-style: italic; border-top: none; }
+
+/* -- fold: a real bucket that isn't the headline ------------------------ */
+.fold { margin: 1.6rem 0; }
+.fold summary { cursor: pointer; list-style: none; padding: .5rem 0;
+  font-size: .92rem; font-weight: 600; color: var(--muted); }
+.fold summary::-webkit-details-marker { display: none; }
+.fold summary::before { content: "\25b6  "; font-size: .7em; color: var(--faint); }
+.fold[open] summary::before { content: "\25bc  "; }
+.fold summary .count { font-weight: 600; color: var(--faint); font-size: .84rem; }
+.fold h2 { margin-top: .35rem; }
+
+/* -- data-handling notice: real, but not the headline ------------------- */
+.handling { margin-top: 1.6rem; background: var(--handle-bg); border: 1px solid var(--handle-border);
+  border-left: 4px solid var(--handle-accent); border-radius: 4px; padding: .6rem .85rem;
+  font-size: .83rem; line-height: 1.5; color: var(--handle-ink); }
+footer { margin-top: 1.1rem; padding-top: .85rem; border-top: 1px solid var(--line);
+  color: var(--muted); font-size: .8rem; line-height: 1.5; }
+
+@media (max-width: 640px) {
+  body { padding: 1rem .75rem 3rem; }
+  h1 { font-size: 1.4rem; }
+  .metric .v { font-size: 1.7rem; }
+  .tbl { max-height: none; }
+}
+@media print {
+  :root {
+    --ink:#14161a; --body:#2a2f39; --muted:#646b78; --faint:#8b929e;
+    --line:#dfe3e9; --rule:#c8ced8; --bg:#fff; --card:#fff;
+    --brand:#a80f1c;
+    --crit:#a80f1c; --crit-bg:#fdeaec; --high:#b4530a; --high-bg:#fdf0e4;
+    --med:#7d6300; --med-bg:#fbf5e0; --low:#45526a; --low-bg:#eef1f6;
+    --ok:#14603a; --ok-bg:#e6f4ec; --info:#1f4f8f; --info-bg:#e8f0fa;
+    --surface:#e9edf3; --stripe:#fafbfc; --hover:#f2f6fc;
+    --neutral-bg:#eef0f4; --neutral-ink:#4a5262;
+    --handle-bg:#fdf8e8; --handle-border:#e6d191; --handle-accent:#bf9518;
+    --handle-ink:#4a4433;
+  }
+  body { background: #fff; padding: 0; font-size: 10.5pt; color: #000; }
+  main { max-width: none; }
+  .tbl { max-height: none; overflow: visible; border-radius: 0; }
+  thead th { position: static; }
+  tbody tr:hover { background: transparent; }
+  .handling { border-color: #999; }
+  table, .metric, .gaps, .verdict, pre, .lede { break-inside: avoid; }
+  h2 { break-after: avoid; }
+  .evidence summary::before { content: ""; }
+  .fold summary::before { content: ""; }
+  .fold > *:not(summary) { display: block !important; }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Parity fixture &lt;script&gt;alert(1)&lt;/script&gt; &amp; &quot;quotes&quot; &amp; &#x27;apostrophes&#x27;</h1>
+<p class="sub">Hostile payloads in every field &amp; a bare ampersand</p>
+<div class="meta"><span>Scope: <b>account 000000000000, region &lt;all&gt;, tag Environment=&#x27;Prod &amp; Stage&#x27;</b></span><span>Generated 2026-01-02 03:04:05 UTC</span><span>No model tokens consumed</span></div>
+</header>
+<div class="verdict t-critical"><div class="vk">Verdict</div><p>Rebuild ami-0000000000000fixture first: 9 CVEs with a public exploit across 12 of 18 instances (50% of the backlog) &amp; nothing else comes close.</p></div>
+<div class="gaps"><h2>Not established by this run</h2><ul><li>A gap containing a bare &amp; ampersand, a &lt;tag&gt;, &quot;double quotes&quot; and &#x27;single quotes&#x27;.</li><li>A second gap, so the &lt;ul&gt; has more than one &lt;li&gt;.</li><li>Non-ASCII: İstanbul, naïve, 日本語, emoji 🔒 — all must survive as UTF-8.</li></ul></div>
+<div class="metrics"><div class="metric t-ok"><div class="l">A real zero</div><div class="v">0</div><div class="n">must render as 0, never as unavailable</div></div><div class="metric"><div class="l">Unavailable</div><div class="v unavailable">unavailable</div><div class="n">no scope -- deliberately not the same as 0</div></div><div class="metric t-critical"><div class="l">String value &amp; &lt;escaped&gt;</div><div class="v">1000 (capped)</div></div><div class="metric"><div class="l">Unknown tone is dropped</div><div class="v">7</div><div class="n">tone &#x27;chartreuse&#x27; must not reach the class attribute</div></div><div class="metric t-critical"><div class="l">Tone is folded ASCII-only</div><div class="v">3</div><div class="n">CRITICAL uppercase must still tint</div></div><div class="metric"><div class="l">Empty string value</div><div class="v"></div><div class="n">an empty string is not null: renders as an empty div, not &#x27;unavailable&#x27;</div></div></div>
+<h2>Ranked images &amp; their &lt;blast radius&gt;</h2><div class="tbl"><table><thead><tr><th class="rank">#</th><th>Risk</th><th>Image</th><th>Name</th><th>Built</th><th>Instances</th><th class="num">CVEs</th><th class="num">ExPRT crit/high</th><th>Flags</th></tr></thead><tbody><tr class="top a-critical"><td class="rank">1</td><td class="sev-critical">critical</td><td class="id">ami-0000000000000aaaa</td><td>base-image &amp; co</td><td>2021-08-16</td><td class="bar">47<span class="track"><span class="fill" style="width:100%"></span></span></td><td class="num">76</td><td class="num">35</td><td><span class="badge b-critical">KEV</span><span class="badge b-critical">Public exploit</span></td></tr><tr class="a-critical"><td class="rank">2</td><td class="sev-critical">critical</td><td class="id">ami-0000000000000bbbb</td><td>&lt;script&gt;alert(1)&lt;/script&gt;</td><td>2023-05-05</td><td class="bar">12<span class="track"><span class="fill" style="width:25%"></span></span></td><td class="num">23</td><td class="num">19</td><td><span class="badge b-critical">Public exploit</span></td></tr><tr class="a-high"><td class="rank">3</td><td class="sev-high">high</td><td class="id">ami-0000000000000cccc</td><td>naïve-İstanbul-日本語</td><td>2024-01-01</td><td class="bar">1<span class="track"><span class="fill" style="width:2%"></span></span></td><td class="num">4</td><td class="num">4</td><td><span class="badge b-neutral">No known exploit</span></td></tr><tr class="a-critical"><td class="rank">4</td><td>kev</td><td class="id">ami-0000000000000dddd</td><td>accent via badge tone</td><td>2020-02-02</td><td class="bar">0<span class="track"><span class="fill" style="width:0%"></span></span></td><td class="num">1</td><td class="num">1</td><td><span class="badge b-neutral">Unrecognised flag</span></td></tr><tr><td class="rank">5</td><td>chartreuse</td><td class="id">ami-0000000000000eeee</td><td>&mdash;</td><td>unknown</td><td class="num">n/a</td><td class="num">0</td><td class="num">0</td><td><span class="bnone">&mdash;</span></td></tr><tr class="a-low"><td class="rank">6</td><td class="sev-low">low</td><td class="id">ami-0000000000000ffff</td><td>short row -- cells end here</td></tr></tbody></table></div><p class="note">Bars scale to the widest value in this table (47), so the comparison is within-table and asserts no total.</p><h2>Bar column whose maximum is zero</h2><div class="tbl"><table><thead><tr><th>Cluster</th><th>Containers</th></tr></thead><tbody><tr><td>cluster-a</td><td class="bar">0<span class="track"><span class="fill" style="width:0%"></span></span></td></tr><tr><td>cluster-b</td><td class="bar">0<span class="track"><span class="fill" style="width:0%"></span></span></td></tr></tbody></table></div><h2>Severity folding</h2><div class="tbl"><table><thead><tr><th>CVE</th><th>Severity</th><th>Note</th></tr></thead><tbody><tr><td class="id">CVE-2000-0001</td><td class="sev-critical">CRITICAL</td><td>uppercase folds to sev-critical</td></tr><tr><td class="id">CVE-2000-0002</td><td class="sev-high">  high  </td><td>whitespace is trimmed before folding</td></tr><tr><td class="id">CVE-2000-0003</td><td>HİGH</td><td>dotted capital I: an ASCII-only fold must leave this unmatched and uncoloured</td></tr><tr><td class="id">CVE-2000-0004</td><td class="sev-informational">Informational</td><td>folds to sev-informational</td></tr><tr><td class="id">CVE-2000-0005</td><td>&mdash;</td><td>a null cell renders as an em dash</td></tr></tbody></table></div><h2>Badge edge cases</h2><div class="tbl"><table><thead><tr><th>Case</th><th>Flags</th></tr></thead><tbody><tr><td>empty string</td><td><span class="bnone">&mdash;</span></td></tr><tr><td>whitespace only</td><td><span class="bnone">&mdash;</span></td></tr><tr><td>commas only</td><td><span class="bnone">&mdash;</span></td></tr><tr><td>null</td><td><span class="bnone">&mdash;</span></td></tr><tr><td>known and unknown</td><td><span class="badge b-critical">KEV</span><span class="badge b-neutral">chartreuse</span><span class="badge b-critical">Public Exploit</span></td></tr><tr><td>needs escaping</td><td><span class="badge b-neutral">&lt;b&gt;bold&lt;/b&gt; &amp; &quot;quoted&quot;</span></td></tr><tr><td>case folded</td><td><span class="badge b-critical">kev</span><span class="badge b-ok">PATCHED</span><span class="badge b-high">poc</span></td></tr></tbody></table></div><h2>Empty table</h2><div class="tbl"><table><thead><tr><th class="rank">#</th><th>A</th><th>B</th></tr></thead><tbody><tr><td colspan="3" class="empty">No rows. For this query that is a real answer, not a failure.</td></tr></tbody></table></div><p class="note">An empty table is still evidence.</p><h2>Legacy table: newer keys absent</h2><div class="tbl"><table><thead><tr><th>Only</th><th>Two</th></tr></thead><tbody><tr><td>a</td><td>b</td></tr></tbody></table></div><details class="fold"><summary>Untraceable &amp; &lt;unresolved&gt; <span class="count">(3 rows)</span></summary><h2>Untraceable &amp; &lt;unresolved&gt;</h2><div class="tbl"><table><thead><tr><th>Instance</th><th>Reason</th></tr></thead><tbody><tr><td class="id">i-0000000000000aaa1</td><td>no instance ID recorded</td></tr><tr><td class="id">i-0000000000000aaa2</td><td>neither cloud&#x27;s image edge nor its config fallback resolved</td></tr><tr><td class="id">i-0000000000000aaa3</td><td>disk lookup returned nothing</td></tr></tbody></table></div></details><details class="fold"><summary>Collapsed table with exactly one row <span class="count">(1 row)</span></summary><h2>Collapsed table with exactly one row</h2><div class="tbl"><table><thead><tr><th>Instance</th></tr></thead><tbody><tr><td>i-0000000000000bbb1</td></tr></tbody></table></div></details><h2>A text block &amp; its &lt;heading&gt;</h2><div class="lede">Prose with a bare &amp; ampersand, a &lt;tag&gt;, &quot;quotes&quot;, &#x27;apostrophes&#x27; and a line
+break that must NOT become a &lt;br&gt;: the lede is not preformatted.</div><h2>Evidence — verbatim, with a &lt;tag&gt; in the heading</h2><pre>instance   i-0000000000000test
+
+relationships[] entry:
+  resource_type       AWS::EC2::Image
+  resource_id         ami-0000000000000aaaa
+  relationship_name   &quot;is attached to&quot;
+  crn                 aws|000000000000|us-west-2|AWS::EC2::Image|ami-0000000000000aaaa
+
+configuration (a JSON *string*):
+  imageId             ami-0000000000000aaaa
+  tag                 &lt;script&gt;alert(1)&lt;/script&gt;
+  amp                 a &amp; b</pre><p class="note">Newlines are preserved by &lt;pre&gt;; the payload is still escaped.</p><h2>Code block with no note</h2><pre>line one
+line two</pre>
+<details class="evidence" open><summary>Evidence <span class="count">&mdash; 5 queries behind this report</span></summary><p class="note">Each number above traces to a row here. Re-running these filters reproduces the report; a row returning nothing is evidence too, since it separates &ldquo;no findings&rdquo; from &ldquo;never asked&rdquo;.</p><div class="tbl"><table><thead><tr><th>Tool</th><th>FQL filter</th><th>Facet</th><th class="num">Limit</th><th class="num">Returned</th></tr></thead><tbody><tr><td class="mono">/spotlight/combined/vulnerabilities/v1</td><td class="fql">status:&#x27;open&#x27;+cve.severity:&#x27;CRITICAL&#x27;</td><td class="mono">host_info, cve</td><td class="num">400/page, 20 pages max</td><td class="num">1000</td></tr><tr class="note-row"><td class="note" colspan="5">A note with an &amp; ampersand and a &lt;tag&gt;.</td></tr><tr><td class="mono">/cloud-security-assets/queries/resources/v1</td><td class="fql">resource_type:&#x27;AWS::EC2::Image&#x27;+resource_id:&#x27;ami-0000000000000eeee&#x27;</td><td class="mono">&mdash;</td><td class="num">1</td><td class="num">0</td></tr><tr class="note-row"><td class="note" colspan="5">HTTP 200, zero results. The question was asked and answered with nothing.</td></tr><tr><td class="mono">/cloud-security-assets/entities/resources/v1</td><td class="fql">&mdash;</td><td class="mono">&mdash;</td><td class="num">&mdash;</td><td class="num empty">not recorded</td></tr><tr><td class="mono">/spotlight/combined/vulnerabilities/v1</td><td class="fql">status:&#x27;open&#x27;+cve.severity:&#x27;HIGH&#x27;</td><td class="mono">cve</td><td class="num">400</td><td class="num">denied -- Vulnerabilities scope unavailable</td></tr><tr class="note-row"><td class="note" colspan="5">401/403/404. Not a count of zero.</td></tr><tr><td class="mono">/cloud-security-assets/queries/resources/v1</td><td class="fql">resource_type:&#x27;AWS::EC2::Instance&#x27;+resource_id:&#x27;i-0000000000000test&#x27;</td><td class="mono">&mdash;</td><td class="num">1</td><td class="num">error -- HTTP 429/5xx</td></tr><tr class="note-row"><td class="note" colspan="5">Transient. Neither a denial nor a zero, and this run exits 1.</td></tr></tbody></table></div></details>
+<div class="handling">
+<strong>Live tenant data.</strong> This file names real hosts, accounts and
+weaknesses. It was written to <code>findings/</code>, which is gitignored &mdash;
+keep it there. Share the script that produced it, not this output.
+</div>
+<footer>
+Produced by a crystallized Falcon API script. Opens offline; makes no network
+requests and contains no JavaScript. Re-run the script to refresh.
+</footer>
+</main>
+</body>
+</html>

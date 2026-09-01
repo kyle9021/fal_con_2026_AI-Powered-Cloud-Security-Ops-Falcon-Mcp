@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/posture-brief.py\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "mcp__falcon-mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard-falcon-writes.py\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "mcp__falcon-mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/detect-injection.py\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+
+  "permissions": {
+    "allow": [
+      "mcp__falcon-mcp__falcon_check_connectivity",
+      "mcp__falcon-mcp__falcon_list_enabled_modules",
+      "mcp__falcon-mcp__falcon_list_enabled_tools",
+      "mcp__falcon-mcp__falcon_search_detections",
+      "mcp__falcon-mcp__falcon_get_detection_details",
+      "mcp__falcon-mcp__falcon_aggregate_detections",
+      "mcp__falcon-mcp__falcon_search_hosts",
+      "mcp__falcon-mcp__falcon_get_host_details",
+      "mcp__falcon-mcp__falcon_search_unmanaged_assets",
+      "mcp__falcon-mcp__falcon_search_vulnerabilities",
+      "mcp__falcon-mcp__falcon_search_kubernetes_containers",
+      "mcp__falcon-mcp__falcon_count_kubernetes_containers",
+      "mcp__falcon-mcp__falcon_search_images_vulnerabilities",
+      "mcp__falcon-mcp__falcon_search_cspm_assets",
+      "mcp__falcon-mcp__falcon_search_cloud_risks",
+      "mcp__falcon-mcp__falcon_search_cloud_groups",
+      "mcp__falcon-mcp__falcon_get_cloud_groups",
+      "mcp__falcon-mcp__falcon_search_iom_findings",
+      "mcp__falcon-mcp__falcon_search_cspm_suppression_rules",
+      "mcp__falcon-mcp__falcon_search_managed_assets",
+      "mcp__falcon-mcp__falcon_search_applications",
+      "mcp__falcon-mcp__falcon_get_mitre_report",
+      "mcp__falcon-mcp__falcon_search_actors",
+      "mcp__falcon-mcp__falcon_search_indicators",
+      "mcp__falcon-mcp__falcon_search_reports",
+      "Bash(./scripts/doctor.sh)",
+      "Bash(./scripts/test-guardrail.sh)",
+      "Bash(./scripts/test-render-parity.sh)",
+      "Bash(python3 scripts/test-crystallized.py)",
+      "Bash(python3 scripts/test-provenance.py)",
+      "Bash(python3 scripts/test-agents.py)",
+      "Bash(python3 crystallized/critical-vulns-by-image.py*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./**/*credentials*)",
+      "Read(./.cache/**)"
+    ]
+  },
+
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": ["falcon-mcp"]
+}

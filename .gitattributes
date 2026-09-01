@@ -1,0 +1,41 @@
+# Line endings are a correctness issue in this repo, not a style preference.
+#
+# On Windows, `git config core.autocrlf true` is a common default (Git for Windows
+# offers it during install). Without the rules below, a clone on such a host
+# rewrites every text file to CRLF, and three separate things break:
+#
+#   * `scripts/*.sh` stops running at all. The shebang becomes
+#     `#!/bin/sh\r`, and the kernel looks for an interpreter literally named
+#     "sh\r". The error -- "bad interpreter: no such file or directory" -- names a
+#     file that plainly exists, which is one of the least guessable failures in
+#     Unix. This also bites WSL and Git Bash users on the same machine that
+#     checked the file out.
+#   * `scripts/test-render-parity.sh` fails. It compares rendered HTML against
+#     `tests/golden/report.html` byte-for-byte, and a CRLF checkout of the golden
+#     shifts every line by one byte.
+#   * Credential-file mode checks read the wrong value. A trailing `\r` survives
+#     the shell's `read`, so `FALCON_CLIENT_ID` ends with a carriage return and the
+#     API rejects it with a 403 that looks like bad keys.
+#
+# So: LF in the working tree, on every platform, for everything executable or
+# byte-compared. `eol=lf` is stronger than `text` alone -- it overrides
+# core.autocrlf rather than deferring to it.
+
+*.sh    text eol=lf
+*.py    text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
+*.html  text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+
+# Files with no extension that are still shell or config.
+env.example  text eol=lf
+LICENSE      text eol=lf
+
+# Binary, so Git never attempts any conversion or diff.
+*.pptx  binary
+*.docx  binary
+*.png   binary
+*.jpg   binary
+*.pdf   binary

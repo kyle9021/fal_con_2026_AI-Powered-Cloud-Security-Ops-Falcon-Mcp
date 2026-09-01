@@ -1,0 +1,308 @@
+{
+  "_comment": [
+    "Rendering fixture. scripts/falcon_report.py must turn this file into",
+    "tests/golden/report.html byte for byte.",
+    "",
+    "Nothing here is real. Every value is chosen to break a naive renderer, and",
+    "each one is annotated below with what it is for. Add cases; do not remove",
+    "them, and do not 'tidy' a value that looks like a typo -- several are.",
+    "",
+    "A renderer that ignores unknown top-level keys will ignore this one too."
+  ],
+
+  "title": "Parity fixture <script>alert(1)</script> & \"quotes\" & 'apostrophes'",
+  "subtitle": "Hostile payloads in every field & a bare ampersand",
+  "scope": "account 000000000000, region <all>, tag Environment='Prod & Stage'",
+
+  "_comment_generated_at": [
+    "Fixed, and deliberately not today. This is an INPUT to rendering: a renderer",
+    "that calls strftime() at render time cannot pass this test, which is the",
+    "point. The %Z is a literal here, not resolved."
+  ],
+  "generated_at": "2026-01-02 03:04:05 UTC",
+
+  "verdict": {
+    "text": "Rebuild ami-0000000000000fixture first: 9 CVEs with a public exploit across 12 of 18 instances (50% of the backlog) & nothing else comes close.",
+    "tone": "critical"
+  },
+
+  "gaps": [
+    "A gap containing a bare & ampersand, a <tag>, \"double quotes\" and 'single quotes'.",
+    "A second gap, so the <ul> has more than one <li>.",
+    "Non-ASCII: İstanbul, naïve, 日本語, emoji 🔒 — all must survive as UTF-8."
+  ],
+
+  "metrics": [
+    {
+      "label": "A real zero",
+      "value": 0,
+      "note": "must render as 0, never as unavailable",
+      "tone": "ok"
+    },
+    {
+      "label": "Unavailable",
+      "value": null,
+      "note": "no scope -- deliberately not the same as 0",
+      "tone": ""
+    },
+    {
+      "label": "String value & <escaped>",
+      "value": "1000 (capped)",
+      "note": "",
+      "tone": "critical"
+    },
+    {
+      "label": "Unknown tone is dropped",
+      "value": 7,
+      "note": "tone 'chartreuse' must not reach the class attribute",
+      "tone": "chartreuse"
+    },
+    {
+      "label": "Tone is folded ASCII-only",
+      "value": 3,
+      "note": "CRITICAL uppercase must still tint",
+      "tone": "  CRITICAL  "
+    },
+    {
+      "label": "Empty string value",
+      "value": "",
+      "note": "an empty string is not null: renders as an empty div, not 'unavailable'",
+      "tone": ""
+    }
+  ],
+
+  "blocks": [
+    {
+      "_comment": [
+        "The full-affordance table. accent=0 holds a bare severity word; row 4",
+        "holds a badge-tone word instead ('kev'), which must map through",
+        "_BADGE_TONES to a-critical. Row 5's accent matches neither and must get",
+        "no accent class at all. Row 6 is SHORT -- fewer cells than columns -- so",
+        "every index lookup has to tolerate a missing cell rather than throw.",
+        "",
+        "bar=4 with a max of 47: 47->100%, 12->25 (not 25.5), 1->2 (not 2.1),",
+        "0->0. The 12/47 case is the one that catches a renderer that rounds:",
+        "floor gives 25, half-up gives 26."
+      ],
+      "kind": "table",
+      "heading": "Ranked images & their <blast radius>",
+      "columns": ["Risk", "Image", "Name", "Built", "Instances", "CVEs", "ExPRT crit/high", "Flags"],
+      "rows": [
+        ["critical", "ami-0000000000000aaaa", "base-image & co", "2021-08-16", 47, 76, 35, "KEV, Public exploit"],
+        ["critical", "ami-0000000000000bbbb", "<script>alert(1)</script>", "2023-05-05", 12, 23, 19, "Public exploit"],
+        ["high", "ami-0000000000000cccc", "naïve-İstanbul-日本語", "2024-01-01", 1, 4, 4, "No known exploit"],
+        ["kev", "ami-0000000000000dddd", "accent via badge tone", "2020-02-02", 0, 1, 1, "Unrecognised flag"],
+        ["chartreuse", "ami-0000000000000eeee", null, "unknown", "n/a", 0, 0, ""],
+        ["low", "ami-0000000000000ffff", "short row -- cells end here"]
+      ],
+      "note": "Bars scale to the widest value in this table (47), so the comparison is within-table and asserts no total.",
+      "numeric": [4, 5, 6],
+      "bar": 4,
+      "accent": 0,
+      "badges": [7],
+      "mono": [1],
+      "rank": true
+    },
+    {
+      "_comment": [
+        "Every bar value is 0, so bar_max is 0 and _bar_pct must return 0 rather",
+        "than dividing by zero. Also: no rank, no accent, and a numeric column",
+        "that IS the bar column -- which must get class 'bar', not class 'num'."
+      ],
+      "kind": "table",
+      "heading": "Bar column whose maximum is zero",
+      "columns": ["Cluster", "Containers"],
+      "rows": [
+        ["cluster-a", 0],
+        ["cluster-b", 0]
+      ],
+      "note": "",
+      "numeric": [1],
+      "bar": 1,
+      "accent": null,
+      "badges": [],
+      "mono": [],
+      "rank": false
+    },
+    {
+      "_comment": [
+        "Severity words in an ordinary cell get sev-* colouring. 'HİGH' has a",
+        "dotted capital I: an ASCII-only fold leaves it unmatched, and a",
+        "Unicode-aware fold (Python's .lower(), .NET's culture-sensitive",
+        ".ToLower()) matches it. This row is the ASCII-folding assertion."
+      ],
+      "kind": "table",
+      "heading": "Severity folding",
+      "columns": ["CVE", "Severity", "Note"],
+      "rows": [
+        ["CVE-2000-0001", "CRITICAL", "uppercase folds to sev-critical"],
+        ["CVE-2000-0002", "  high  ", "whitespace is trimmed before folding"],
+        ["CVE-2000-0003", "HİGH", "dotted capital I: an ASCII-only fold must leave this unmatched and uncoloured"],
+        ["CVE-2000-0004", "Informational", "folds to sev-informational"],
+        ["CVE-2000-0005", null, "a null cell renders as an em dash"]
+      ],
+      "note": "",
+      "numeric": [],
+      "bar": null,
+      "accent": null,
+      "badges": [],
+      "mono": [0],
+      "rank": false
+    },
+    {
+      "_comment": [
+        "Badge edge cases: an empty cell, a whitespace-only cell, a cell that is",
+        "nothing but commas, mixed known and unknown tokens, and a token needing",
+        "escaping."
+      ],
+      "kind": "table",
+      "heading": "Badge edge cases",
+      "columns": ["Case", "Flags"],
+      "rows": [
+        ["empty string", ""],
+        ["whitespace only", "   "],
+        ["commas only", " , , "],
+        ["null", null],
+        ["known and unknown", "KEV, chartreuse, Public Exploit"],
+        ["needs escaping", "<b>bold</b> & \"quoted\""],
+        ["case folded", "kev, PATCHED, poc"]
+      ],
+      "note": "",
+      "numeric": [],
+      "bar": null,
+      "accent": null,
+      "badges": [1],
+      "mono": [],
+      "rank": false
+    },
+    {
+      "_comment": "No rows at all. Must state that emptiness is a real answer.",
+      "kind": "table",
+      "heading": "Empty table",
+      "columns": ["A", "B"],
+      "rows": [],
+      "note": "An empty table is still evidence.",
+      "numeric": [],
+      "bar": null,
+      "accent": null,
+      "badges": [],
+      "mono": [],
+      "rank": true
+    },
+    {
+      "_comment": [
+        "A table with only the keys an older renderer wrote. Every newer key is",
+        "absent, so from_dict()'s setdefault path -- and its equivalent in the",
+        "other two renderers -- is exercised. Deleting this block would let a",
+        "renderer that hard-requires 'bar' pass."
+      ],
+      "kind": "table",
+      "heading": "Legacy table: newer keys absent",
+      "columns": ["Only", "Two"],
+      "rows": [["a", "b"]]
+    },
+    {
+      "_comment": [
+        "Collapsed table: closed by default (no 'open' attribute), wrapped in",
+        "<details class=\"fold\">. The count in the summary must equal len(rows),",
+        "not a separately tracked number, and pluralises 'rows'. A hostile",
+        "payload in the heading exercises escaping inside the <summary> too,",
+        "since the heading is rendered twice (summary and inner <h2>)."
+      ],
+      "kind": "table",
+      "heading": "Untraceable & <unresolved>",
+      "columns": ["Instance", "Reason"],
+      "rows": [
+        ["i-0000000000000aaa1", "no instance ID recorded"],
+        ["i-0000000000000aaa2", "neither cloud's image edge nor its config fallback resolved"],
+        ["i-0000000000000aaa3", "disk lookup returned nothing"]
+      ],
+      "note": "",
+      "numeric": [],
+      "bar": null,
+      "accent": null,
+      "badges": [],
+      "mono": [0],
+      "rank": false,
+      "collapsed": true
+    },
+    {
+      "_comment": "Same as above but exactly one row, so 'row' (singular) is exercised too.",
+      "kind": "table",
+      "heading": "Collapsed table with exactly one row",
+      "columns": ["Instance"],
+      "rows": [["i-0000000000000bbb1"]],
+      "note": "",
+      "numeric": [],
+      "bar": null,
+      "accent": null,
+      "badges": [],
+      "mono": [],
+      "rank": false,
+      "collapsed": true
+    },
+    {
+      "kind": "text",
+      "heading": "A text block & its <heading>",
+      "body": "Prose with a bare & ampersand, a <tag>, \"quotes\", 'apostrophes' and a line\nbreak that must NOT become a <br>: the lede is not preformatted."
+    },
+    {
+      "kind": "code",
+      "heading": "Evidence — verbatim, with a <tag> in the heading",
+      "body": "instance   i-0000000000000test\n\nrelationships[] entry:\n  resource_type       AWS::EC2::Image\n  resource_id         ami-0000000000000aaaa\n  relationship_name   \"is attached to\"\n  crn                 aws|000000000000|us-west-2|AWS::EC2::Image|ami-0000000000000aaaa\n\nconfiguration (a JSON *string*):\n  imageId             ami-0000000000000aaaa\n  tag                 <script>alert(1)</script>\n  amp                 a & b",
+      "note": "Newlines are preserved by <pre>; the payload is still escaped."
+    },
+    {
+      "_comment": "A code block with no note, so the note branch is exercised both ways.",
+      "kind": "code",
+      "heading": "Code block with no note",
+      "body": "line one\nline two"
+    }
+  ],
+
+  "queries": [
+    {
+      "tool": "/spotlight/combined/vulnerabilities/v1",
+      "filter": "status:'open'+cve.severity:'CRITICAL'",
+      "facet": "host_info, cve",
+      "limit": "400/page, 20 pages max",
+      "returned": 1000,
+      "note": "A note with an & ampersand and a <tag>."
+    },
+    {
+      "_comment": "returned 0 -- a real answer, and it must not read as 'not recorded'.",
+      "tool": "/cloud-security-assets/queries/resources/v1",
+      "filter": "resource_type:'AWS::EC2::Image'+resource_id:'ami-0000000000000eeee'",
+      "facet": "",
+      "limit": 1,
+      "returned": 0,
+      "note": "HTTP 200, zero results. The question was asked and answered with nothing."
+    },
+    {
+      "_comment": "returned null -- 'not recorded', which is a third thing again.",
+      "tool": "/cloud-security-assets/entities/resources/v1",
+      "filter": "",
+      "facet": "",
+      "limit": null,
+      "returned": null,
+      "note": ""
+    },
+    {
+      "_comment": "A string in the returned column, and empty filter/facet -> em dashes.",
+      "tool": "/spotlight/combined/vulnerabilities/v1",
+      "filter": "status:'open'+cve.severity:'HIGH'",
+      "facet": "cve",
+      "limit": 400,
+      "returned": "denied -- Vulnerabilities scope unavailable",
+      "note": "401/403/404. Not a count of zero."
+    },
+    {
+      "tool": "/cloud-security-assets/queries/resources/v1",
+      "filter": "resource_type:'AWS::EC2::Instance'+resource_id:'i-0000000000000test'",
+      "facet": "",
+      "limit": 1,
+      "returned": "error -- HTTP 429/5xx",
+      "note": "Transient. Neither a denial nor a zero, and this run exits 1."
+    }
+  ]
+}

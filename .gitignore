@@ -1,0 +1,64 @@
+# ---------------------------------------------------------------------------
+# Credentials and secrets -- never commit these.
+# The patterns are deliberately broad: anything that looks like a live env file
+# is excluded, and the checked-in template is named "env.example" so it does
+# not need an exception here.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+*.env
+!env.example
+
+*credentials*
+*secret*
+*.pem
+*.key
+*.p12
+*.pfx
+.netrc
+
+# ---------------------------------------------------------------------------
+# Harness runtime state. Both can contain tenant data:
+#   .cache/posture-brief.json  -- detection and vulnerability counts
+#   .cache/tool-audit.jsonl    -- which tools ran and when
+# ---------------------------------------------------------------------------
+.cache/
+*.log
+
+# ---------------------------------------------------------------------------
+# Investigation output. Skills and crystallized scripts write findings, HTML
+# dashboards and JSON data here. These routinely contain hostnames, cluster
+# names, cloud account IDs and CVE inventories -- i.e. a map of where you are
+# weakest. Keep it local. If you need to share a finding, redact it deliberately.
+#
+# Note what is NOT ignored: crystallized/ is tracked on purpose. Those scripts
+# hold queries and ranking logic, not data -- they read tenant specifics from
+# .env. The script is the reusable asset; its output is not.
+# ---------------------------------------------------------------------------
+findings/
+out/
+*.remediation.sh
+
+# ---------------------------------------------------------------------------
+# Source material that should not travel with a public repo.
+# The presentation decks and their extracted markdown drafts are internal
+# working material -- the repo is the artefact the audience gets, not the deck.
+# ---------------------------------------------------------------------------
+*.pptx
+*.docx
+*.pdf
+~$*
+falcon-mcp-falcons-presentation*.md
+BK-*.md
+
+# ---------------------------------------------------------------------------
+# Local tooling noise.
+# ---------------------------------------------------------------------------
+.claude/settings.local.json
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.DS_Store
+.idea/
+.vscode/
